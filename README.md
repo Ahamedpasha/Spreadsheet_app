@@ -70,6 +70,7 @@ Open your web browser and go to `http://127.0.0.1:5000/` to use the Spreadsheet 
 
 
 spreadsheet-app/
+
 ├── app.py # Flask backend script
 ├── templates/
 │ └── index.html # HTML frontend template
