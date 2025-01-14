@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spreadsheet App</title>
+    <style>
+        /* General body styling */
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(45deg, #f0f8ff, #e0f7fa, #b2ebf2, #80deea);
+            background-size: 400% 400%;
+            animation: gradientBackground 15s ease infinite;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        @keyframes gradientBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Global styling for container */
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        /* Spreadsheet App Header */
+        h1 {
+            text-align: center;
+            color: #fff;
+            font-size: 3rem;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #007bff, #00c6ff); /* Gradient header */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        /* Input fields styling */
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 18px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
+            outline: none;
+        }
+
+        /* Button Styling */
+        .operation-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 15px 25px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            font-weight: 600;
+            margin: 5px;
+            min-width: 140px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            background-color: #0056b3;
+        }
+
+        /* Color buttons for different operations */
+        button {
+            background: #32cd32;
+            color: white;
+        }
+
+        button:focus {
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        }
+
+        /* Result Area Styling */
+        .result {
+            background-color: #e9f7fc;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: 500;
+            display: none;
+        }
+
+        /* Background gradient for input section */
+        .input-container {
+            background: #f7f7f7;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .operation-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .operation-buttons button {
+                width: 100%;
+                max-width: 200px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .container {
+                width: 90%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Spreadsheet App</h1>
+
+        <!-- Input Section -->
+        <div class="input-container">
+            <label for="values" class="section-title">Enter Values (comma-separated):</label>
+            <input type="text" id="values" placeholder="e.g. 1, 2, 3, 4, 1">
+        </div>
+
+        <!-- Operation Buttons Section -->
+        <div class="operation-buttons">
+            <button onclick="performOperation('SUM')">SUM</button>
+            <button onclick="performOperation('AVERAGE')">AVERAGE</button>
+            <button onclick="performOperation('MAX')">MAX</button>
+            <button onclick="performOperation('MIN')">MIN</button>
+            <button onclick="performOperation('COUNT')">COUNT</button>
+            <button onclick="performOperation('TRIM')">TRIM</button>
+            <button onclick="performOperation('UPPER')">UPPER</button>
+            <button onclick="performOperation('LOWER')">LOWER</button>
+            <button onclick="showFindAndReplace()">FIND AND REPLACE</button>
+            <button onclick="showRemoveDuplicate()">REMOVE DUPLICATE</button>
+        </div>
+
+        <!-- Find and Replace Section -->
+        <div id="find-replace-inputs" style="display: none;">
+            <label for="find" class="section-title">Find:</label>
+            <input type="text" id="find" placeholder="Text to find">
+            <label for="replace" class="section-title">Replace:</label>
+            <input type="text" id="replace" placeholder="Replacement text">
+            <button onclick="performFindAndReplace()">Apply Find and Replace</button>
+        </div>
+
+        <!-- Remove Duplicate Section -->
+        <div id="remove-duplicate-section" style="display: none;">
+            <button onclick="performRemoveDuplicate()">Remove Duplicates</button>
+        </div>
+
+        <!-- Result Section -->
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        function performOperation(operation) {
+            const valuesInput = document.getElementById('values').value;
+            const values = valuesInput.split(',').map(val => isNaN(val.trim()) ? val.trim() : parseFloat(val.trim()));
+            let result;
+
+            switch (operation) {
+                case 'SUM':
+                    result = values.reduce((acc, val) => acc + val, 0);
+                    break;
+                case 'AVERAGE':
+                    result = values.reduce((acc, val) => acc + val, 0) / values.length;
+                    break;
+                case 'MAX':
+                    result = Math.max(...values);
+                    break;
+                case 'MIN':
+                    result = Math.min(...values);
+                    break;
+                case 'COUNT':
+                    result = values.length;
+                    break;
+                case 'TRIM':
+                    result = values.map(val => val.toString().trim()).join(', ');
+                    break;
+                case 'UPPER':
+                    result = values.map(val => val.toString().toUpperCase()).join(', ');
+                    break;
+                case 'LOWER':
+                    result = values.map(val => val.toString().toLowerCase()).join(', ');
+                    break;
+                default:
+                    result = 'Invalid Operation';
+            }
+
+            document.getElementById('result').innerText = `Result: ${result}`;
+            document.getElementById('result').style.display = 'block';
+        }
+
+        function showFindAndReplace() {
+            document.getElementById('find-replace-inputs').style.display = 'block';
+        }
+
+        function performFindAndReplace() {
+            const findInput = document.getElementById('find').value.trim();
+            const replaceInput = document.getElementById('replace').value.trim(); 
+            let values = document.getElementById('values').value.split(',');
+
+            // Perform find and replace on the values
+            values = values.map(val => val.trim() === findInput ? replaceInput : val.trim());
+            
+            // Display the updated values in the "Result Section"
+            const result = values.join(', ');
+            document.getElementById('result').innerText = `Result: ${result}`;
+            document.getElementById('result').style.display = 'block';
+        }
+
+        function showRemoveDuplicate() {
+            document.getElementById('remove-duplicate-section').style.display = 'block';
+        }
+
+        function performRemoveDuplicate() {
+            const valuesInput = document.getElementById('values').value;
+            const values = [...new Set(valuesInput.split(',').map(val => val.trim()))];
+
+            // Display the updated values in the "Result Section"
+            const result = values.join(', ');
+            document.getElementById('result').innerText = `Result: ${result}`;
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
